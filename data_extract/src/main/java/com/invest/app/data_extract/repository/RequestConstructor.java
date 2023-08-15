@@ -7,12 +7,10 @@ import java.net.URL;
 
 import org.w3c.dom.ranges.RangeException;
 
+import com.invest.app.data_extract.repository.default_requests.Postfix;
+import com.invest.app.data_extract.repository.default_requests.Prefix;
+
 public class RequestConstructor {
-	
-	public static final String DEFAULT_GET_PREFIX = "https://iss.moex.com/iss/history/engines/"
-			+ "stock/markets/shares/boards/TQBR/securities/";
-	public static final String DEFAULT_GET_POSTFIX = ".json?iss.meta=off&iss.json=extended&callback=JSON_CALLBACK&lang=ru&iss"
-			+ ".only=history&sort_column=TRADEDATE&sort_order=desc";
 	
 	private String secId;
 	private HttpURLConnection connection;
@@ -32,14 +30,19 @@ public class RequestConstructor {
 	public void disconnect() {
 		connection.disconnect();
 	}
+	
 	public String getRequest() {
-		return DEFAULT_GET_PREFIX + secId + DEFAULT_GET_POSTFIX;
+		return Prefix.DEFAULT_GET_PREFIX.value() + secId + Postfix.DEFAULT_GET_POSTFIX.value();
 	}
 	
-	public BufferedReader sendRequest(){
+	public String getDatesRequest() {
+		return Prefix.DEFAULT_GET_PREFIX.value() + secId + Postfix.DEFAULT_GET_DATES_POSTFIX.value();
+	}
+	
+	public BufferedReader sendRequest(String request){
 		
 		try {	
-			URL url = new URL(this.getRequest());
+			URL url = new URL(request);
 	        
 	        connection = (HttpURLConnection) url.openConnection();
 	        
@@ -53,6 +56,8 @@ public class RequestConstructor {
 	        
 	        return new BufferedReader(new InputStreamReader((connection.getInputStream())));
 		} catch (Exception e) {
+			
+			System.out.println(e);
 			connection.disconnect();
 			
 			return null;
