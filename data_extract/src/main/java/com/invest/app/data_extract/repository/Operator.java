@@ -24,38 +24,38 @@ public class Operator implements GetOperator{
 	}
 
 	@Override
-	public List<Issuer> getIssuerForFiveMonths() {
+	public List<Issuer> getIssuerForLastMonth() {
+        BufferedReader br = request.sendRequest(request.getRequest());
 
-           BufferedReader br = request.sendRequest(request.getRequest());
-
-           String output;
-           StringBuilder builder = new StringBuilder();
+        String output;
+        StringBuilder builder = new StringBuilder();
+        
+        List<Issuer> issuerData;
             
-           try {
-	        	   br.readLine();
-				   br.readLine();
-				   br.readLine();
-				   br.readLine();
-				                
-	               do {
-		            	output = br.readLine();
-		            	builder.append(output+'\n');
-	            	
-	               } while (output != null);
-			   
-	               builder.delete(builder.indexOf("]"), builder.length());
-			   
-			} catch (IOException e) {
-				   e.printStackTrace();
-			}
+        try {
+   			do {
+               	output = br.readLine();
+               	builder.append(output+'\n');
+           	
+              } while (!output.equals("}}"));
+   			
+   		} catch (IOException e) {
+   			e.printStackTrace();
+   			
+   			request.disconnect();
+   		}
+   		
+   		request.disconnect();
+   		
+   		try {
+			issuerData = SimpleJsonParser.getIssuerForLastMonth(SimpleJsonParser.parse(builder.toString()), request.getSecId());
+		} catch (IOException e) {
+			issuerData = null;
+			
+			e.printStackTrace();
+		}
            
-           request.disconnect();
-           
-           return Arrays.asList(builder.toString()
-        		   .split("\n"))
-        		   .stream()
-        		   .map(x -> Issuer.convertStringToIssuer(x, request.getSecId()))
-        		   .toList();	
+   		return issuerData;
 	}
 	
 	@Override
@@ -82,6 +82,7 @@ public class Operator implements GetOperator{
 			
 			period = new TimePeriod("0", "0");
 		}
+		
 		request.disconnect();
 		
 		try {

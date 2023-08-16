@@ -7,7 +7,7 @@ import com.invest.app.data_extract.repository.time_utils.TimePeriod;
 
 public interface GetOperator {
 	
-	public List<Issuer> getIssuerForFiveMonths();
+	public List<Issuer> getIssuerForLastMonth();
 	
 	public TimePeriod getIssuerDates();
 

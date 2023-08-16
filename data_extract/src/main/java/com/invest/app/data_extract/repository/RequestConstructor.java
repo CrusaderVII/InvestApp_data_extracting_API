@@ -32,7 +32,7 @@ public class RequestConstructor {
 	}
 	
 	public String getRequest() {
-		return Prefix.DEFAULT_GET_PREFIX.value() + secId + Postfix.DEFAULT_GET_POSTFIX.value();
+		return Prefix.DEFAULT_GET_PREFIX.value() + secId + Postfix.DEFAULT_GET_FOR_LAST_MONTH_POSTFIX.value();
 	}
 	
 	public String getDatesRequest() {

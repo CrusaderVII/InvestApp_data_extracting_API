@@ -2,7 +2,7 @@ package com.invest.app.data_extract.entities;
 
 public class IssuerFactory {
 
-	public Issuer create(String secId, String fullName, double priceLow, double priceHigh) {
+	public static Issuer create(String secId, String fullName, double priceLow, double priceHigh) {
 		return new Issuer(secId, fullName, priceLow, priceHigh);
 	}
 	

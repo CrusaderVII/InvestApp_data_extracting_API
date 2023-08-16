@@ -1,5 +1,7 @@
 package com.invest.app.data_extract.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,10 +14,10 @@ import com.invest.app.data_extract.repository.time_utils.TimePeriod;
 public class MainController {
 
 	@GetMapping("/")
-	public Issuer getIssuer() {
+	public List<Issuer> getIssuer() {
 		RequestConstructor requestConstructor = new RequestConstructor("GAZP");
 		
-		return new Operator(requestConstructor).getIssuerForFiveMonths().get(0);
+		return new Operator(requestConstructor).getIssuerForLastMonth();
 	}
 	
 	@GetMapping("/dates")
