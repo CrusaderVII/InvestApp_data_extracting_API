@@ -26,4 +26,11 @@ public class MainController {
 		
 		return new Operator(requestConstructor).getIssuerDates();
 	}
+	
+	@GetMapping("/now")
+	public Issuer getIssuerNow() {
+		RequestConstructor requestConstructor = new RequestConstructor("GAZP");
+		
+		return new Operator(requestConstructor).getIssuerNow();
+	}
 }

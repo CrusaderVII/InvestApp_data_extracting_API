@@ -32,11 +32,15 @@ public class RequestConstructor {
 	}
 	
 	public String getRequest() {
-		return Prefix.DEFAULT_GET_PREFIX.value() + secId + Postfix.DEFAULT_GET_FOR_LAST_MONTH_POSTFIX.value();
+		return Prefix.DEFAULT_GET_HISTORY_PREFIX.value() + secId + Postfix.DEFAULT_GET_FOR_LAST_MONTH_POSTFIX.value();
 	}
 	
 	public String getDatesRequest() {
-		return Prefix.DEFAULT_GET_PREFIX.value() + secId + Postfix.DEFAULT_GET_DATES_POSTFIX.value();
+		return Prefix.DEFAULT_GET_HISTORY_PREFIX.value() + secId + Postfix.DEFAULT_GET_DATES_POSTFIX.value();
+	}
+	
+	public String getNowRequest() {
+		return Prefix.DEFAULT_GET_NOW_PREFIX.value() + secId + Postfix.DEFAULT_GET_NOW_POSTFIX.value();
 	}
 	
 	public BufferedReader sendRequest(String request){

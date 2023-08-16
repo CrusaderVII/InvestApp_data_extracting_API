@@ -95,6 +95,39 @@ public class Operator implements GetOperator{
 		
 		return period;
 	}
+	
+	@Override
+	public Issuer getIssuerNow() {
+		BufferedReader br = request.sendRequest(request.getNowRequest());
+
+        String output;
+        StringBuilder builder = new StringBuilder();
+        
+        Issuer issuerNow;
+        
+        try {
+   			do {
+               	output = br.readLine();
+               	builder.append(output+'\n');
+           	
+              } while (!output.equals("}}"));
+   			
+   		} catch (IOException e) {
+   			e.printStackTrace();
+   			
+   			request.disconnect();
+   		}
+        
+        try {
+			issuerNow= SimpleJsonParser.getIssuerNow(SimpleJsonParser.parse(builder.toString()), request.getSecId());
+		} catch (IOException e) {
+			issuerNow = null;
+			
+			e.printStackTrace();
+		}
+		
+		return issuerNow;
+	}
 
 	public RequestConstructor getRequest() {
 		return request;

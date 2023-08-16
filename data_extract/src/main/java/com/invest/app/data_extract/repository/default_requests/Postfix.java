@@ -4,7 +4,9 @@ public enum Postfix {
 	DEFAULT_GET_FOR_LAST_MONTH_POSTFIX (".json?iss.meta=off&"
 			+ ".only=history&sort_column=TRADEDATE&sort_order=desc"),
 	
-	DEFAULT_GET_DATES_POSTFIX ("/dates.json?");
+	DEFAULT_GET_DATES_POSTFIX ("/dates.json?"),
+	
+	DEFAULT_GET_NOW_POSTFIX (".jsonp?iss.meta=off");
 	
 	private final String value;
 	

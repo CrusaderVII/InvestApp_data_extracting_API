@@ -9,6 +9,7 @@ public class Issuer {
 	private String fullName;
 	private double priceLow;
 	private double priceHigh;
+	private double priceNow;
 	
 	public Issuer() {
 		
@@ -19,6 +20,14 @@ public class Issuer {
 		this.fullName = fullName;
 		this.priceLow = priceLow;
 		this.priceHigh = priceHigh;
+	}
+	
+	public Issuer(String secId, String fullName, double priceLow, double priceHigh, double priceNow) {
+		this.secId = secId;
+		this.fullName = fullName;
+		this.priceLow = priceLow;
+		this.priceHigh = priceHigh;
+		this.priceNow = priceNow;
 	}
 	
 	public String getShortName() {
@@ -49,31 +58,17 @@ public class Issuer {
 		this.priceHigh = priceHigh;
 	}
 	
-	public static Issuer convertStringToIssuer (String stringRepresentation, String secId) {
-		stringRepresentation = stringRepresentation.replaceAll("\\{", "").replaceAll("\\}", "");
-		
-		List<String> splittedStringRepresentation = Arrays.asList(stringRepresentation.split(","));
-		
-		String name = splittedStringRepresentation.get(2)
-				.split(" ")[2]
-				.replaceAll("\"", "");
-		
-		String lowPrice = splittedStringRepresentation.get(7)
-				.split(" ")[2]
-				.replaceAll("\"", "");
-				
-		String highPrice = splittedStringRepresentation.get(8)
-				.split(" ")[2]
-				.replaceAll("\"", "");
-		
-		return new Issuer(secId, name, Double.parseDouble(lowPrice), Double.parseDouble(highPrice));
+	public double getPriceNow() {
+		return priceNow;
 	}
-
+	public void setPriceNow(double pirceNow) {
+		this.priceNow = pirceNow;
+	}
 
 	@Override
 	public String toString() {
 		return "Issuer [secId=" + secId + ", fullName=" + fullName + ", priceLow=" + priceLow + ", priceHigh="
-				+ priceHigh + "]";
+				+ priceHigh + (this.priceNow == 0? "" : "priceNow="+this.priceNow) + "]";
 	}
 		
 	
