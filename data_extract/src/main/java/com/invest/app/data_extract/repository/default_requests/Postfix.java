@@ -6,7 +6,11 @@ public enum Postfix {
 	
 	DEFAULT_GET_DATES_POSTFIX ("/dates.json?"),
 	
-	DEFAULT_GET_NOW_POSTFIX (".jsonp?iss.meta=off");
+	DEFAULT_GET_NOW_POSTFIX (".jsonp?iss.meta=off"),
+	
+	DEFAULT_GET_HISTORY_POSTFIX (".json?iss.meta=off&start="),
+	
+	DEFAULT_GET_HISTORY_CURSOR_POSTFIX (".json?iss.meta=off&iss.only=history.cursor");
 	
 	private final String value;
 	

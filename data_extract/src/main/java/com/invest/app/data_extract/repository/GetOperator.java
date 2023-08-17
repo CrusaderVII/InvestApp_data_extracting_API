@@ -12,5 +12,7 @@ public interface GetOperator {
 	public TimePeriod getIssuerDates();
 	
 	public Issuer getIssuerNow();
+	
+	public List<Issuer> getIssuerHistory();
 
 }

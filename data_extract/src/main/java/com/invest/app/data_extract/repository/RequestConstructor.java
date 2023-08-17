@@ -43,6 +43,14 @@ public class RequestConstructor {
 		return Prefix.DEFAULT_GET_NOW_PREFIX.value() + secId + Postfix.DEFAULT_GET_NOW_POSTFIX.value();
 	}
 	
+	public String getHistroyRequest(int page) {
+		return Prefix.DEFAULT_GET_HISTORY_PREFIX.value() + secId + Postfix.DEFAULT_GET_HISTORY_POSTFIX.value() + page;
+	}
+	
+	public String getHistoryCursorRequest() {
+		return Prefix.DEFAULT_GET_HISTORY_PREFIX.value() + secId + Postfix.DEFAULT_GET_HISTORY_CURSOR_POSTFIX.value();
+	}
+	
 	public BufferedReader sendRequest(String request){
 		
 		try {	

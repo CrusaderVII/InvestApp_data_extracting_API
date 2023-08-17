@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -98,12 +99,21 @@ public class Operator implements GetOperator{
 	
 	@Override
 	public Issuer getIssuerNow() {
-		BufferedReader br = request.sendRequest(request.getNowRequest());
+		
+		return null;
+	}
+
+	@Override
+	public List<Issuer> getIssuerHistory() {
+		List<Issuer> issuerHistory = new ArrayList<>();
+		
+		BufferedReader br = request.sendRequest(request.getHistoryCursorRequest());
 
         String output;
         StringBuilder builder = new StringBuilder();
         
-        Issuer issuerNow;
+        int total;
+        int current = 0;
         
         try {
    			do {
@@ -119,14 +129,52 @@ public class Operator implements GetOperator{
    		}
         
         try {
-			issuerNow= SimpleJsonParser.getIssuerNow(SimpleJsonParser.parse(builder.toString()), request.getSecId());
+			total = SimpleJsonParser.getPageNumber(SimpleJsonParser.parse(builder.toString()));
 		} catch (IOException e) {
-			issuerNow = null;
+			total = 0;
+			
+			e.printStackTrace();
+		}
+        
+        while (current < total-93) {
+        	issuerHistory.addAll(getIssuerHistoryOnPage(current));
+        	
+			current += 100;
+		}
+		
+		return issuerHistory;
+	}
+	
+	public List<Issuer> getIssuerHistoryOnPage(int page) {
+		BufferedReader br = request.sendRequest(request.getHistroyRequest(page));
+
+        String output;
+        StringBuilder builder = new StringBuilder();
+        
+        List<Issuer> issuerData;
+        
+        try {
+   			do {
+               	output = br.readLine();
+               	builder.append(output+'\n');
+           	
+              } while (output == null || !output.equals("}}"));
+   			
+   		} catch (IOException e) {
+   			e.printStackTrace();
+   			
+   			request.disconnect();
+   		}
+        
+        try {
+			issuerData= SimpleJsonParser.getIssuerHistory(SimpleJsonParser.parse(builder.toString()), request.getSecId());
+		} catch (IOException e) {
+			issuerData = null;
 			
 			e.printStackTrace();
 		}
 		
-		return issuerNow;
+		return issuerData;
 	}
 
 	public RequestConstructor getRequest() {

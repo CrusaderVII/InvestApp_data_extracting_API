@@ -30,9 +30,7 @@ public class SimpleJsonParser {
 		JsonNode innerNode = jsonNode.get("dates");
 		
 		JsonNode values = innerNode.get("data");
-		
-		System.out.println(values.get(0).get(0));
-		
+				
 		return new TimePeriod(values.get(0).get(0).textValue(), values.get(0).get(1).textValue());
 	}
 	
@@ -71,7 +69,7 @@ public class SimpleJsonParser {
 		
 		List<String> fieldsMarket = new ArrayList<>();
 		List<String> fieldsIssuer = new ArrayList<>();
-
+		
 		
 		innerNodeMarketData.get("columns")
 			.iterator()
@@ -93,5 +91,51 @@ public class SimpleJsonParser {
 				innerNodeMarketData.get("data").get(0).get(lowIndex).asDouble(),
 				innerNodeMarketData.get("data").get(0).get(highIndex).asDouble(),
 				innerNodeMarketData.get("data").get(0).get(nowIndex).asDouble());
+	}
+	
+	public static List<Issuer> getIssuerHistory(JsonNode jsonNode, String secId) {
+		JsonNode innerNode = jsonNode.get("history");
+		
+		List<String> fields = new ArrayList<>();
+		List<Issuer> issuers = new ArrayList<>();
+		
+		innerNode.get("columns")
+			.iterator()
+			.forEachRemaining(fieldName -> fields
+					.add(fieldName.asText()));
+		
+		int nameIndex = fields.indexOf("SHORTNAME");
+		int lowIndex  = fields.indexOf("LOW");
+		int highIndex = fields.indexOf("HIGH");
+		
+		for (int i = 0; i < 100; i+=30) {
+			JsonNode issuerDate = innerNode.get("data").get(i); 
+			
+			System.out.println(issuerDate.get(1).asText());
+			issuers.add(IssuerFactory.create(secId, 
+					issuerDate.get(nameIndex).asText(),
+					issuerDate.get(lowIndex).asDouble(),
+					issuerDate.get(highIndex).asDouble()));
+		}
+		
+		return issuers;
+	}
+	
+	public static int getPageNumber(JsonNode jsonNode) {
+		JsonNode innerNode = jsonNode.get("history.cursor");
+
+		List<String> fields = new ArrayList<>();
+		
+		innerNode.get("columns")
+			.iterator()
+			.forEachRemaining(fieldName -> fields
+					.add(fieldName.asText()));
+
+		int index = fields.indexOf("TOTAL");
+
+		return innerNode.get("data")
+				.get(0)
+				.get(index)
+				.asInt();
 	}
 }
