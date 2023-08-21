@@ -2,10 +2,23 @@ package com.invest.app.data_extract.repository;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.security.interfaces.RSAMultiPrimePrivateCrtKey;
 
-import org.w3c.dom.ranges.RangeException;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.DefaultClientConnectionReuseStrategy;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpRequest;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 
 import com.invest.app.data_extract.repository.default_requests.Postfix;
 import com.invest.app.data_extract.repository.default_requests.Prefix;
@@ -14,6 +27,10 @@ public class RequestConstructor {
 	
 	private String secId;
 	private HttpURLConnection connection;
+		
+	public RequestConstructor() {
+			
+	}
 	
 	public RequestConstructor(String secId) {
 		this.secId = secId;
@@ -51,30 +68,16 @@ public class RequestConstructor {
 		return Prefix.DEFAULT_GET_HISTORY_PREFIX.value() + secId + Postfix.DEFAULT_GET_HISTORY_CURSOR_POSTFIX.value();
 	}
 	
-	public BufferedReader sendRequest(String request){
-		
-		try {	
-			URL url = new URL(request);
-	        
-	        connection = (HttpURLConnection) url.openConnection();
-	        
-	        connection.setRequestMethod("GET");
-	        
-	        connection.setRequestProperty("Accept", "application/json");
+	public String getAllIssuersRequest() {
+		return Prefix.DEFAULT_GET_ALL_ISSUERS.value() + Postfix.DEFAULT_JSON_EXTENSION.value();
+	}
 	
-	        if (connection.getResponseCode() != 200) {
-	            throw new RuntimeException("Failed : HTTP error code : " + connection.getResponseCode());
-	        }
-	        
-	        return new BufferedReader(new InputStreamReader((connection.getInputStream())));
-		} catch (Exception e) {
-			
-			System.out.println(e);
-			connection.disconnect();
-			
-			return null;
-		}
+	public BufferedReader getPlainJson(String request) {
+		RestTemplate template = new RestTemplate();
 		
+		ResponseEntity<String> responseEntity = template.getForEntity(request, String.class);
+				
+		return new BufferedReader(new StringReader(responseEntity.getBody()));
 	}
 
 }

@@ -9,7 +9,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.invest.app.data_extract.entities.Issuer;
 import com.invest.app.data_extract.entities.IssuerFactory;
+import com.invest.app.data_extract.entities.IssuerMetadata;
 import com.invest.app.data_extract.repository.time_utils.TimePeriod;
+
+import ch.qos.logback.core.pattern.parser.Node;
 
 public class SimpleJsonParser {
 	
@@ -109,14 +112,25 @@ public class SimpleJsonParser {
 		int highIndex = fields.indexOf("HIGH");
 		int dateIndex = fields.indexOf("TRADEDATE");
 		
-		for (int i = 0; i < (current+100 > total ? total-current : 100); i+=30) {
+		String startingDateString = innerNode.get("data")
+				.get(0)	
+				.get(dateIndex)
+				.asText();
+		
+		for (int i = 0; i < (current+100 > total ? total-current : 100); i+=1) {
 			JsonNode issuerDate = innerNode.get("data").get(i); 
 			
-			issuers.add(IssuerFactory.create(secId, 
+			String currentIteratorDate = issuerDate.get(dateIndex).asText();
+			
+			if(currentIteratorDate.substring(currentIteratorDate.length()-3)
+				.equals(startingDateString.substring(currentIteratorDate.length()-3))) {
+				
+				issuers.add(IssuerFactory.create(secId, 
 					issuerDate.get(nameIndex).asText(),
 					issuerDate.get(lowIndex).asDouble(),
 					issuerDate.get(highIndex).asDouble(),
 					issuerDate.get(dateIndex).asText()));
+			}
 		}
 		
 		return issuers;
@@ -138,5 +152,30 @@ public class SimpleJsonParser {
 				.get(0)
 				.get(index)
 				.asInt();
+	}
+	
+	public static List<IssuerMetadata> getAllIssuersSecId(JsonNode jsonNode) {
+		JsonNode innerNode = jsonNode.get("securities");
+				
+		
+		List<IssuerMetadata> allIssuersMetadata = new ArrayList<>();
+		List<String> fields = new ArrayList<>();
+		
+		innerNode.get("columns")
+			.iterator()
+			.forEachRemaining(fieldName -> fields.add(fieldName.asText()));
+
+		int secIdIndex = fields.indexOf("SECID");
+		int boardIdIndex = fields.indexOf("BOARDID");
+		int nameIndex = fields.indexOf("SHORTNAME");
+		
+		innerNode.get("data")
+			.iterator()
+			.forEachRemaining(node -> allIssuersMetadata.add(new IssuerMetadata(
+					node.get(secIdIndex).asText(),
+					node.get(nameIndex).asText(),
+					node.get(boardIdIndex).asText())));
+		
+		return allIssuersMetadata;
 	}
 }

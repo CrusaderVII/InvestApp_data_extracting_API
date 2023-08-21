@@ -3,6 +3,7 @@ package com.invest.app.data_extract.repository;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.invest.app.data_extract.entities.Issuer;
+import com.invest.app.data_extract.entities.IssuerMetadata;
 import com.invest.app.data_extract.json_parser.SimpleJsonParser;
 import com.invest.app.data_extract.repository.time_utils.TimePeriod;
 
@@ -26,30 +28,14 @@ public class Operator implements GetOperator{
 
 	@Override
 	public List<Issuer> getIssuerForLastMonth() {
-        BufferedReader br = request.sendRequest(request.getRequest());
-
-        String output;
-        StringBuilder builder = new StringBuilder();
+        BufferedReader br = request.getPlainJson(request.getRequest());
         
         List<Issuer> issuerData;
-            
-        try {
-   			do {
-               	output = br.readLine();
-               	builder.append(output+'\n');
-           	
-              } while (!output.equals("}}"));
-   			
-   		} catch (IOException e) {
-   			e.printStackTrace();
-   			
-   			request.disconnect();
-   		}
-   		
-   		request.disconnect();
    		
    		try {
-			issuerData = SimpleJsonParser.getIssuerForLastMonth(SimpleJsonParser.parse(builder.toString()), request.getSecId());
+			issuerData = SimpleJsonParser
+					.getIssuerForLastMonth(SimpleJsonParser
+							.parse(readJson(br)), request.getSecId());
 		} catch (IOException e) {
 			issuerData = null;
 			
@@ -62,32 +48,12 @@ public class Operator implements GetOperator{
 	@Override
 	public TimePeriod getIssuerDates() {
 		
-		BufferedReader br = request.sendRequest(request.getDatesRequest());
-		
-		String output;
-        StringBuilder builder = new StringBuilder();
+		BufferedReader br = request.getPlainJson(request.getDatesRequest());
         
         TimePeriod period;
-
-		try {
-			do {
-            	output = br.readLine();
-            	builder.append(output+'\n');
-        	
-           } while (!output.equals("}}"));
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			
-			request.disconnect();
-			
-			period = new TimePeriod("0", "0");
-		}
-		
-		request.disconnect();
 		
 		try {
-			period = SimpleJsonParser.getTimePeriod(SimpleJsonParser.parse(builder.toString()));
+			period = SimpleJsonParser.getTimePeriod(SimpleJsonParser.parse(readJson(br)));
 		} catch (IOException e) {
 			period = new TimePeriod("0", "0");
 			
@@ -107,29 +73,15 @@ public class Operator implements GetOperator{
 	public List<Issuer> getIssuerHistory() {
 		List<Issuer> issuerHistory = new ArrayList<>();
 		
-		BufferedReader br = request.sendRequest(request.getHistoryCursorRequest());
-
-        String output;
-        StringBuilder builder = new StringBuilder();
+		BufferedReader br = request.getPlainJson(request.getHistoryCursorRequest());
         
         int total;
         int current = 0;
         
         try {
-   			do {
-               	output = br.readLine();
-               	builder.append(output+'\n');
-           	
-              } while (!output.equals("}}"));
-   			
-   		} catch (IOException e) {
-   			e.printStackTrace();
-   			
-   			request.disconnect();
-   		}
-        
-        try {
-			total = SimpleJsonParser.getPageNumber(SimpleJsonParser.parse(builder.toString()));
+			total = SimpleJsonParser
+					.getPageNumber(SimpleJsonParser
+							.parse(readJson(br)));
 		} catch (IOException e) {
 			total = 0;
 			
@@ -146,14 +98,46 @@ public class Operator implements GetOperator{
 	}
 	
 	public List<Issuer> getIssuerHistoryOnPage(int current, int total) {
-		BufferedReader br = request.sendRequest(request.getHistroyRequest(current));
-
-        String output;
-        StringBuilder builder = new StringBuilder();
+		BufferedReader br = request.getPlainJson(request.getHistroyRequest(current));
         
         List<Issuer> issuerData;
         
         try {
+			issuerData = SimpleJsonParser
+					.getIssuerHistory(SimpleJsonParser
+							.parse(readJson(br)), request.getSecId(),current, total);
+		} catch (IOException e) {
+			issuerData = null;
+			
+			e.printStackTrace();
+		}
+		
+		return issuerData;
+	}
+	
+	public List<IssuerMetadata> getAllIssuersMetadata() {
+		BufferedReader br = request.getPlainJson(request.getAllIssuersRequest());
+		
+		List<IssuerMetadata> issuersMetadata = new ArrayList<>();
+                
+        try {
+			issuersMetadata = SimpleJsonParser
+					.getAllIssuersSecId(SimpleJsonParser
+							.parse(readJson(br)));
+		} catch (IOException e) {
+			issuersMetadata = null;
+			
+			e.printStackTrace();
+		}
+        
+        return issuersMetadata;
+	}
+	
+	private String readJson(BufferedReader br) {
+		String output;
+        StringBuilder builder = new StringBuilder();
+        
+		try {
    			do {
                	output = br.readLine();
                	builder.append(output+'\n');
@@ -162,20 +146,9 @@ public class Operator implements GetOperator{
    			
    		} catch (IOException e) {
    			e.printStackTrace();
-   			
-   			request.disconnect();
    		}
-        
-        try {
-			issuerData= SimpleJsonParser.getIssuerHistory(SimpleJsonParser.parse(builder.toString()), request.getSecId(),
-					current, total);
-		} catch (IOException e) {
-			issuerData = null;
-			
-			e.printStackTrace();
-		}
 		
-		return issuerData;
+		return builder.toString();
 	}
 
 	public RequestConstructor getRequest() {
