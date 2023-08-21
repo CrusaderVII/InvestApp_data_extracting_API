@@ -10,6 +10,7 @@ public class Issuer {
 	private double priceLow;
 	private double priceHigh;
 	private double priceNow;
+	private String date;
 	
 	public Issuer() {
 		
@@ -28,6 +29,15 @@ public class Issuer {
 		this.priceLow = priceLow;
 		this.priceHigh = priceHigh;
 		this.priceNow = priceNow;
+	}
+	
+	public Issuer(String secId, String fullName, double priceLow, double priceHigh, double priceNow, String date) {
+		this.secId = secId;
+		this.fullName = fullName;
+		this.priceLow = priceLow;
+		this.priceHigh = priceHigh;
+		this.priceNow = priceNow;
+		this.date = date;
 	}
 	
 	public String getShortName() {
@@ -63,6 +73,13 @@ public class Issuer {
 	}
 	public void setPriceNow(double pirceNow) {
 		this.priceNow = pirceNow;
+	}
+	
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 	@Override

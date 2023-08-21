@@ -15,7 +15,7 @@ import com.invest.app.data_extract.repository.time_utils.TimePeriod;
 @RestController
 public class MainController {
 
-	@GetMapping("/{id}")
+	@GetMapping("/last_month/{id}")
 	public List<Issuer> getIssuer(@PathVariable String id) {
 		RequestConstructor requestConstructor = new RequestConstructor(id);
 		
@@ -42,7 +42,6 @@ public class MainController {
 		
 		List<Issuer> list = new Operator(requestConstructor).getIssuerHistory();
 		
-		System.out.println(list.size());
 		return list;
 	}
 }

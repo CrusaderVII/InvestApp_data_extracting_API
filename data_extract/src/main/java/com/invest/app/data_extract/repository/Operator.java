@@ -136,8 +136,8 @@ public class Operator implements GetOperator{
 			e.printStackTrace();
 		}
         
-        while (current < total-93) {
-        	issuerHistory.addAll(getIssuerHistoryOnPage(current));
+        while (current <= total) {
+        	issuerHistory.addAll(getIssuerHistoryOnPage(current, total));
         	
 			current += 100;
 		}
@@ -145,8 +145,8 @@ public class Operator implements GetOperator{
 		return issuerHistory;
 	}
 	
-	public List<Issuer> getIssuerHistoryOnPage(int page) {
-		BufferedReader br = request.sendRequest(request.getHistroyRequest(page));
+	public List<Issuer> getIssuerHistoryOnPage(int current, int total) {
+		BufferedReader br = request.sendRequest(request.getHistroyRequest(current));
 
         String output;
         StringBuilder builder = new StringBuilder();
@@ -167,7 +167,8 @@ public class Operator implements GetOperator{
    		}
         
         try {
-			issuerData= SimpleJsonParser.getIssuerHistory(SimpleJsonParser.parse(builder.toString()), request.getSecId());
+			issuerData= SimpleJsonParser.getIssuerHistory(SimpleJsonParser.parse(builder.toString()), request.getSecId(),
+					current, total);
 		} catch (IOException e) {
 			issuerData = null;
 			

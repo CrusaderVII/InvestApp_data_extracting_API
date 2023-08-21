@@ -86,14 +86,14 @@ public class SimpleJsonParser {
 		int highIndex = fieldsMarket.indexOf("HIGH");
 		int nowIndex = fieldsMarket.indexOf("LAST");
 		
-		return new Issuer(secId,
+		return IssuerFactory.create(secId,
 				innerNodeIssuerData.get("data").get(0).get(nameIndex).asText(),
 				innerNodeMarketData.get("data").get(0).get(lowIndex).asDouble(),
 				innerNodeMarketData.get("data").get(0).get(highIndex).asDouble(),
 				innerNodeMarketData.get("data").get(0).get(nowIndex).asDouble());
 	}
 	
-	public static List<Issuer> getIssuerHistory(JsonNode jsonNode, String secId) {
+	public static List<Issuer> getIssuerHistory(JsonNode jsonNode, String secId, int current, int total) {
 		JsonNode innerNode = jsonNode.get("history");
 		
 		List<String> fields = new ArrayList<>();
@@ -107,15 +107,16 @@ public class SimpleJsonParser {
 		int nameIndex = fields.indexOf("SHORTNAME");
 		int lowIndex  = fields.indexOf("LOW");
 		int highIndex = fields.indexOf("HIGH");
+		int dateIndex = fields.indexOf("TRADEDATE");
 		
-		for (int i = 0; i < 100; i+=30) {
+		for (int i = 0; i < (current+100 > total ? total-current : 100); i+=30) {
 			JsonNode issuerDate = innerNode.get("data").get(i); 
 			
-			System.out.println(issuerDate.get(1).asText());
 			issuers.add(IssuerFactory.create(secId, 
 					issuerDate.get(nameIndex).asText(),
 					issuerDate.get(lowIndex).asDouble(),
-					issuerDate.get(highIndex).asDouble()));
+					issuerDate.get(highIndex).asDouble(),
+					issuerDate.get(dateIndex).asText()));
 		}
 		
 		return issuers;
