@@ -35,7 +35,7 @@ public class MainController {
 		RequestConstructor requestConstructor = new RequestConstructor(id);
 		
 		Issuer issuer = new Operator(requestConstructor).getIssuerNow();
-		System.out.println(issuer);
+		
 		return issuer;
 	}
 	

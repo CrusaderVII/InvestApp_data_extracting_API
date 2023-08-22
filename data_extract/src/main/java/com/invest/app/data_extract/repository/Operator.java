@@ -65,8 +65,20 @@ public class Operator implements GetOperator{
 	
 	@Override
 	public Issuer getIssuerNow() {
+		BufferedReader br = request.getPlainJson(request.getNowRequest());
 		
-		return null;
+		Issuer issuer;
+		
+		try {
+			issuer = SimpleJsonParser
+					.getIssuerNow(SimpleJsonParser
+							.parse(readJson(br)), request.getSecId());
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+			return null;
+		}
+		return issuer;
 	}
 
 	@Override
