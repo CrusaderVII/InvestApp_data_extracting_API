@@ -12,7 +12,9 @@ public enum Postfix {
 	
 	DEFAULT_GET_HISTORY_CURSOR_POSTFIX (".json?iss.meta=off&iss.only=history.cursor"),
 	
-	DEFAULT_JSON_EXTENSION (".json");
+	DEFAULT_JSON_EXTENSION (".json"),
+	
+	DEFAULT_GET_USER_ISSUERS_POSTFIX ("get/user/issuers?id=");
 	
 	private final String value;
 	

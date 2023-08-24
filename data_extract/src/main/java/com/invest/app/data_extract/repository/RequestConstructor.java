@@ -43,11 +43,11 @@ public class RequestConstructor {
 		this.secId = secId;
 	}
 	
-	public String getRequest() {
+	public static String getRequest(String secId) {
 		return Prefix.DEFAULT_GET_HISTORY_PREFIX.value() + secId + Postfix.DEFAULT_GET_FOR_LAST_MONTH_POSTFIX.value();
 	}
 	
-	public String getDatesRequest() {
+	public static String getDatesRequest(String secId) {
 		return Prefix.DEFAULT_GET_HISTORY_PREFIX.value() + secId + Postfix.DEFAULT_GET_DATES_POSTFIX.value();
 	}
 	
@@ -55,23 +55,27 @@ public class RequestConstructor {
 		return Prefix.DEFAULT_GET_NOW_PREFIX.value() + secId + Postfix.DEFAULT_GET_NOW_POSTFIX.value();
 	}
 	
-	public String getHistroyRequest(int page) {
+	public static String getHistroyRequest(int page, String secId) {
 		return Prefix.DEFAULT_GET_HISTORY_PREFIX.value() + secId + Postfix.DEFAULT_GET_HISTORY_POSTFIX.value() + page;
 	}
 	
-	public String getHistoryCursorRequest() {
+	public static String getHistoryCursorRequest(String secId) {
 		return Prefix.DEFAULT_GET_HISTORY_PREFIX.value() + secId + Postfix.DEFAULT_GET_HISTORY_CURSOR_POSTFIX.value();
 	}
 	
-	public String getAllIssuersRequest() {
-		return Prefix.DEFAULT_GET_ALL_ISSUERS.value() + Postfix.DEFAULT_JSON_EXTENSION.value();
+	public static String getAllIssuersRequest() {
+		return Prefix.DEFAULT_GET_ALL_ISSUERS_PREFIX.value() + Postfix.DEFAULT_JSON_EXTENSION.value();
 	}
 	
 	public static String getNowRequest(String secId) {
 		return Prefix.DEFAULT_GET_NOW_PREFIX.value() + secId + Postfix.DEFAULT_GET_NOW_POSTFIX.value();
 	}
 	
-	public BufferedReader getPlainJson(String request) {
+	public static String getUsersIssuerNow(Long id) {
+		return Prefix.DEFAULT_GET_USER_ISSUERS_PREFIX.value() + Postfix.DEFAULT_GET_USER_ISSUERS_POSTFIX.value() + id.toString();
+	}
+	
+	public static BufferedReader getPlainJson(String request) {
 		RestTemplate template = new RestTemplate();
 		
 		ResponseEntity<String> responseEntity = template.getForEntity(request, String.class);

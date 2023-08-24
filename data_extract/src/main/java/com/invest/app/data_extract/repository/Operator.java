@@ -18,24 +18,21 @@ import com.invest.app.data_extract.entities.IssuerMetadata;
 import com.invest.app.data_extract.json_parser.SimpleJsonParser;
 import com.invest.app.data_extract.repository.time_utils.TimePeriod;
 
-public class Operator implements GetOperator{
-	
-	private RequestConstructor request;
+public class Operator{
 
 	public Operator(RequestConstructor request) {
-		this.request = request;
+		
 	}
 
-	@Override
-	public List<Issuer> getIssuerForLastMonth() {
-        BufferedReader br = request.getPlainJson(request.getRequest());
+	public static List<Issuer> getIssuerForLastMonth(String secId) {
+        BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getRequest(secId));
         
         List<Issuer> issuerData;
    		
    		try {
 			issuerData = SimpleJsonParser
 					.getIssuerForLastMonth(SimpleJsonParser
-							.parse(readJson(br)), request.getSecId());
+							.parse(readJson(br)), secId);
 		} catch (IOException e) {
 			issuerData = null;
 			
@@ -45,10 +42,9 @@ public class Operator implements GetOperator{
    		return issuerData;
 	}
 	
-	@Override
-	public TimePeriod getIssuerDates() {
+	public TimePeriod getIssuerDates(String secId) {
 		
-		BufferedReader br = request.getPlainJson(request.getDatesRequest());
+		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getDatesRequest(secId));
         
         TimePeriod period;
 		
@@ -63,33 +59,15 @@ public class Operator implements GetOperator{
 		return period;
 	}
 	
-	@Override
-	public Issuer getIssuerNow() {
-		BufferedReader br = request.getPlainJson(request.getNowRequest());
-		
-		Issuer issuer;
-		
-		try {
-			issuer = SimpleJsonParser
-					.getIssuerNow(SimpleJsonParser
-							.parse(readJson(br)), request.getSecId());
-		} catch (IOException e) {
-			e.printStackTrace();
-			
-			return null;
-		}
-		return issuer;
-	}
-	
 	public Issuer getIssuerNow(String secId) {
-		BufferedReader br =  new RequestConstructor(secId).getPlainJson(RequestConstructor.getNowRequest(secId));
+		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getNowRequest(secId));
 		
 		Issuer issuer;
 		
 		try {
 			issuer = SimpleJsonParser
 					.getIssuerNow(SimpleJsonParser
-							.parse(readJson(br)), request.getSecId());
+							.parse(readJson(br)), secId);
 		} catch (IOException e) {
 			e.printStackTrace();
 			
@@ -98,11 +76,10 @@ public class Operator implements GetOperator{
 		return issuer;
 	}
 
-	@Override
-	public List<Issuer> getIssuerHistory() {
+	public List<Issuer> getIssuerHistory(String secId) {
 		List<Issuer> issuerHistory = new ArrayList<>();
 		
-		BufferedReader br = request.getPlainJson(request.getHistoryCursorRequest());
+		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getHistoryCursorRequest(secId));
         
         int total;
         int current = 0;
@@ -118,7 +95,7 @@ public class Operator implements GetOperator{
 		}
         
         while (current <= total) {
-        	issuerHistory.addAll(getIssuerHistoryOnPage(current, total));
+        	issuerHistory.addAll(getIssuerHistoryOnPage(current, total, secId));
         	
 			current += 100;
 		}
@@ -126,15 +103,15 @@ public class Operator implements GetOperator{
 		return issuerHistory;
 	}
 	
-	public List<Issuer> getIssuerHistoryOnPage(int current, int total) {
-		BufferedReader br = request.getPlainJson(request.getHistroyRequest(current));
+	public List<Issuer> getIssuerHistoryOnPage(int current, int total, String secId) {
+		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getHistroyRequest(current, secId));
         
         List<Issuer> issuerData;
         
         try {
 			issuerData = SimpleJsonParser
 					.getIssuerHistory(SimpleJsonParser
-							.parse(readJson(br)), request.getSecId(),current, total);
+							.parse(readJson(br)), secId, current, total);
 		} catch (IOException e) {
 			issuerData = null;
 			
@@ -145,7 +122,7 @@ public class Operator implements GetOperator{
 	}
 	
 	public List<IssuerMetadata> getAllIssuersMetadata() {
-		BufferedReader br = request.getPlainJson(request.getAllIssuersRequest());
+		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getAllIssuersRequest());
 		
 		List<IssuerMetadata> issuersMetadata = new ArrayList<>();
                 
@@ -162,16 +139,37 @@ public class Operator implements GetOperator{
         return issuersMetadata;
 	}
 	
-	private String readJson(BufferedReader br) {
+	public static List<Issuer> getCertainIssuersNow(Long id) {
+		
+		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getUsersIssuerNow(id));
+		
+		List<Issuer> issuers;
+		try {
+			issuers = SimpleJsonParser
+					.getUserIssuersNow(SimpleJsonParser
+							.parse(readJson(br)));
+		} catch (IOException e) {
+			issuers = null;
+			
+			e.printStackTrace();
+		}
+		
+		issuers.forEach(System.out::println);
+		
+		return issuers;
+	}
+	
+	private static String readJson(BufferedReader br) {
 		String output;
         StringBuilder builder = new StringBuilder();
-        
 		try {
    			do {
                	output = br.readLine();
-               	builder.append(output+'\n');
-           	
-              } while (output == null || !output.equals("}}"));
+               	
+               	if(output!=null) builder.append(output+'\n');
+               	
+               	;
+              } while (output != null );
    			
    		} catch (IOException e) {
    			e.printStackTrace();
@@ -179,17 +177,5 @@ public class Operator implements GetOperator{
 		
 		return builder.toString();
 	}
-
-	public RequestConstructor getRequest() {
-		return request;
-	}
-
-	public void setRequest(RequestConstructor request) {
-		this.request = request;
-	}
-	
-	
-	
-	
 
 }

@@ -4,16 +4,14 @@ public class IssuerMetadata {
 	
 	private String secId;
 	private String fullName;
-	private String boardid;
 	
 	public IssuerMetadata() {
 		
 	}
 	
-	public IssuerMetadata(String secId, String fullName, String boardid) {
+	public IssuerMetadata(String secId, String fullName) {
 		this.secId = secId;
 		this.fullName = fullName;
-		this.boardid = boardid;
 	}
 
 	public String getSecId() {
@@ -32,14 +30,10 @@ public class IssuerMetadata {
 		this.fullName = fullName;
 	}
 
-	public String getBoardid() {
-		return boardid;
+	@Override
+	public String toString() {
+		return "IssuerMetadata [secId=" + secId + ", fullName=" + fullName + "]";
 	}
-
-	public void setBoardid(String boardid) {
-		this.boardid = boardid;
-	}
-	
 	
 	
 	

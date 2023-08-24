@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.invest.app.data_extract.entities.Issuer;
 import com.invest.app.data_extract.entities.IssuerFactory;
 import com.invest.app.data_extract.entities.IssuerMetadata;
+import com.invest.app.data_extract.repository.Operator;
+import com.invest.app.data_extract.repository.RequestConstructor;
 import com.invest.app.data_extract.repository.time_utils.TimePeriod;
 
 import ch.qos.logback.core.pattern.parser.Node;
@@ -166,16 +168,34 @@ public class SimpleJsonParser {
 			.forEachRemaining(fieldName -> fields.add(fieldName.asText()));
 
 		int secIdIndex = fields.indexOf("SECID");
-		int boardIdIndex = fields.indexOf("BOARDID");
 		int nameIndex = fields.indexOf("SHORTNAME");
 		
 		innerNode.get("data")
 			.iterator()
 			.forEachRemaining(node -> allIssuersMetadata.add(new IssuerMetadata(
 					node.get(secIdIndex).asText(),
-					node.get(nameIndex).asText(),
-					node.get(boardIdIndex).asText())));
+					node.get(nameIndex).asText())));
 		
 		return allIssuersMetadata;
+	}
+	
+	public static List<Issuer> getUserIssuersNow(JsonNode jsonNode) {		
+		List<IssuerMetadata> issuerMetadatas = new ArrayList<>();
+		
+		RequestConstructor requestConstructor = new RequestConstructor();
+		Operator operator = new Operator(requestConstructor);
+		
+		
+		jsonNode.iterator()
+			.forEachRemaining(innerNode -> issuerMetadatas
+					.add(new IssuerMetadata(innerNode.get("secId").asText(),
+											innerNode.get("fullName").asText())));
+
+		
+		List<Issuer> issuers = issuerMetadatas.stream()
+			.map(issuerMetadata -> operator.getIssuerNow(issuerMetadata.getSecId()))
+			.toList();
+		
+		return issuers;
 	}
 }
