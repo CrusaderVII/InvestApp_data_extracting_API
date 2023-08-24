@@ -39,6 +39,23 @@ public class MainController {
 		return issuer;
 	}
 	
+	@GetMapping("/now/all")
+	public List<Issuer> getAllIssuersNow(@RequestParam int page) {
+		RequestConstructor requestConstructor = new RequestConstructor();
+		Operator operator = new Operator(requestConstructor);
+		
+		List<IssuerMetadata> list = operator.getAllIssuersMetadata();
+		
+		List<Issuer> listIssuers = list.stream()
+				.map(issuer -> operator.getIssuerNow(issuer.getSecId()))
+				.toList();
+		
+		int begin = (page-1) * 10;
+		int end = (page-1) * 10 + 10;
+		
+		return listIssuers.subList(begin, end >= listIssuers.size() ? listIssuers.size()-1 : end);
+	}
+	
 	@GetMapping("/history/{id}")
 	public List<Issuer> getIssuerHistory(@PathVariable String id) {
 		RequestConstructor requestConstructor = new RequestConstructor(id);

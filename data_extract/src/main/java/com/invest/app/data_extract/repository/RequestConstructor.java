@@ -26,7 +26,6 @@ import com.invest.app.data_extract.repository.default_requests.Prefix;
 public class RequestConstructor {
 	
 	private String secId;
-	private HttpURLConnection connection;
 		
 	public RequestConstructor() {
 			
@@ -42,10 +41,6 @@ public class RequestConstructor {
 
 	public void setSecId(String secId) {
 		this.secId = secId;
-	}
-	
-	public void disconnect() {
-		connection.disconnect();
 	}
 	
 	public String getRequest() {
@@ -70,6 +65,10 @@ public class RequestConstructor {
 	
 	public String getAllIssuersRequest() {
 		return Prefix.DEFAULT_GET_ALL_ISSUERS.value() + Postfix.DEFAULT_JSON_EXTENSION.value();
+	}
+	
+	public static String getNowRequest(String secId) {
+		return Prefix.DEFAULT_GET_NOW_PREFIX.value() + secId + Postfix.DEFAULT_GET_NOW_POSTFIX.value();
 	}
 	
 	public BufferedReader getPlainJson(String request) {

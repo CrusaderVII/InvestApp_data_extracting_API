@@ -80,6 +80,23 @@ public class Operator implements GetOperator{
 		}
 		return issuer;
 	}
+	
+	public Issuer getIssuerNow(String secId) {
+		BufferedReader br =  new RequestConstructor(secId).getPlainJson(RequestConstructor.getNowRequest(secId));
+		
+		Issuer issuer;
+		
+		try {
+			issuer = SimpleJsonParser
+					.getIssuerNow(SimpleJsonParser
+							.parse(readJson(br)), request.getSecId());
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+			return null;
+		}
+		return issuer;
+	}
 
 	@Override
 	public List<Issuer> getIssuerHistory() {
