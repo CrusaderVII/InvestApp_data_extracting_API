@@ -16,35 +16,34 @@ import com.invest.app.data_extract.repository.time_utils.TimePeriod;
 @RestController
 public class MainController {
 
-	@GetMapping("/last_month/{id}")
-	public List<Issuer> getIssuer(@PathVariable String id) {
-		RequestConstructor requestConstructor = new RequestConstructor(id);
-		
-		return new Operator(requestConstructor).getIssuerForLastMonth();
+	@GetMapping("/last-month")
+	public List<Issuer> getIssuer(@RequestParam String id) {		
+		return Operator.getIssuerForLastMonth(id);
 	}
 	
-	@GetMapping("/dates/{id}")
-	public TimePeriod getIssuerDates(@PathVariable String id) {
-		RequestConstructor requestConstructor = new RequestConstructor(id);
-		
-		return new Operator(requestConstructor).getIssuerDates();
+	@GetMapping("/dates")
+	public TimePeriod getIssuerDates(@RequestParam String id) {		
+		return Operator.getIssuerDates(id);
 	}
 	
-	@GetMapping("/history/{id}")
-	public List<Issuer> getIssuerHistory(@PathVariable String id) {
-		RequestConstructor requestConstructor = new RequestConstructor(id);
-		
-		List<Issuer> list = new Operator(requestConstructor).getIssuerHistory();
+	@GetMapping("/history")
+	public List<Issuer> getIssuerHistory(@RequestParam String id) {
+		List<Issuer> list = Operator.getIssuerHistory(id);
 		
 		return list;
 	}
 	
 	@GetMapping("/issuers")
-	public List<IssuerMetadata> getAllIssuers() {
-		RequestConstructor requestConstructor = new RequestConstructor();
-		
-		List<IssuerMetadata> list = new Operator(requestConstructor).getAllIssuersMetadata();
+	public List<IssuerMetadata> getAllIssuers() {		
+		List<IssuerMetadata> list = Operator.getAllIssuersMetadata();
 		
 		return list;
+	}
+	
+	@GetMapping("/issuers/level")
+	public List<IssuerMetadata> getAllIssuersOnCertainLevel(@RequestParam int level) {
+		List<IssuerMetadata> issuers = Operator.getIssuersMetadataOnCertainLevel(level);
+		
+		return issuers;
 	}
 }

@@ -42,7 +42,7 @@ public class Operator{
    		return issuerData;
 	}
 	
-	public TimePeriod getIssuerDates(String secId) {
+	public static TimePeriod getIssuerDates(String secId) {
 		
 		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getDatesRequest(secId));
         
@@ -59,7 +59,7 @@ public class Operator{
 		return period;
 	}
 	
-	public Issuer getIssuerNow(String secId) {
+	public static Issuer getIssuerNow(String secId) {
 		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getNowRequest(secId));
 		
 		Issuer issuer;
@@ -76,7 +76,7 @@ public class Operator{
 		return issuer;
 	}
 
-	public List<Issuer> getIssuerHistory(String secId) {
+	public static List<Issuer> getIssuerHistory(String secId) {
 		List<Issuer> issuerHistory = new ArrayList<>();
 		
 		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getHistoryCursorRequest(secId));
@@ -103,7 +103,7 @@ public class Operator{
 		return issuerHistory;
 	}
 	
-	public List<Issuer> getIssuerHistoryOnPage(int current, int total, String secId) {
+	public static List<Issuer> getIssuerHistoryOnPage(int current, int total, String secId) {
 		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getHistroyRequest(current, secId));
         
         List<Issuer> issuerData;
@@ -121,7 +121,7 @@ public class Operator{
 		return issuerData;
 	}
 	
-	public List<IssuerMetadata> getAllIssuersMetadata() {
+	public static List<IssuerMetadata> getAllIssuersMetadata() {
 		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getAllIssuersRequest());
 		
 		List<IssuerMetadata> issuersMetadata = new ArrayList<>();
@@ -130,6 +130,25 @@ public class Operator{
 			issuersMetadata = SimpleJsonParser
 					.getAllIssuersSecId(SimpleJsonParser
 							.parse(readJson(br)));
+		} catch (IOException e) {
+			issuersMetadata = null;
+			
+			e.printStackTrace();
+		}
+        
+        return issuersMetadata;
+	}
+	
+	public static List<IssuerMetadata> getIssuersMetadataOnCertainLevel(int level) {
+		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getAllIssuersRequest());
+		
+		List<IssuerMetadata> issuersMetadata = new ArrayList<>();
+                
+        try {
+			issuersMetadata = SimpleJsonParser
+					.getIssuerMetadatasOnCertainLevel(SimpleJsonParser
+								.parse(readJson(br)),
+							level);
 		} catch (IOException e) {
 			issuersMetadata = null;
 			

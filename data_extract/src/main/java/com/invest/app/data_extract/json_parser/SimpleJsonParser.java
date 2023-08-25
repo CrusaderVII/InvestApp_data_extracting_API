@@ -2,7 +2,11 @@ package com.invest.app.data_extract.json_parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -159,7 +163,6 @@ public class SimpleJsonParser {
 	public static List<IssuerMetadata> getAllIssuersSecId(JsonNode jsonNode) {
 		JsonNode innerNode = jsonNode.get("securities");
 				
-		
 		List<IssuerMetadata> allIssuersMetadata = new ArrayList<>();
 		List<String> fields = new ArrayList<>();
 		
@@ -197,5 +200,42 @@ public class SimpleJsonParser {
 			.toList();
 		
 		return issuers;
+	}
+	
+	public static List<IssuerMetadata> getIssuerMetadatasOnCertainLevel(JsonNode jsonNode, int level) {
+		JsonNode innerNode = jsonNode.get("securities");
+		
+		List<IssuerMetadata> allIssuersMetadata = new ArrayList<>();
+		List<String> fields = new ArrayList<>();
+		Map<IssuerMetadata, Integer> allIssuersMetadataWithLevel = new HashMap<>();
+		
+		innerNode.get("columns")
+			.iterator()
+			.forEachRemaining(fieldName -> fields.add(fieldName.asText()));
+
+		int secIdIndex = fields.indexOf("SECID");
+		int nameIndex = fields.indexOf("SHORTNAME");
+		int levelIndex = fields.indexOf("LISTLEVEL");
+		int typeIndex = fields.indexOf("SECTYPE");
+		
+		innerNode.get("data")
+			.iterator()
+			.forEachRemaining(node -> {
+				
+					if (node.get(levelIndex).asInt()==level && node.get(typeIndex).asText().equals("1")) {
+						allIssuersMetadata.add(new IssuerMetadata(
+							node.get(secIdIndex).asText(),
+							node.get(nameIndex).asText()));
+					}
+				}
+			);
+			
+			
+		
+		for (Entry<IssuerMetadata, Integer> entry : allIssuersMetadataWithLevel.entrySet()) {
+			if(entry.getValue()==level) allIssuersMetadata.add(entry.getKey());
+		}
+		
+		return allIssuersMetadata;
 	}
 }

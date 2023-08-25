@@ -28,13 +28,10 @@ public class NowController {
 	
 	@GetMapping("/all")
 	public List<Issuer> getAllIssuersNow(@RequestParam int page) {
-		RequestConstructor requestConstructor = new RequestConstructor();
-		Operator operator = new Operator(requestConstructor);
-		
-		List<IssuerMetadata> list = operator.getAllIssuersMetadata();
+		List<IssuerMetadata> list = Operator.getAllIssuersMetadata();
 		
 		List<Issuer> listIssuers = list.stream()
-				.map(issuer -> operator.getIssuerNow(issuer.getSecId()))
+				.map(issuer -> Operator.getIssuerNow(issuer.getSecId()))
 				.toList();
 		
 		int begin = (page-1) * 10;
