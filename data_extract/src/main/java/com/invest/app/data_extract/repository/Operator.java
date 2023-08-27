@@ -15,8 +15,8 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.invest.app.data_extract.entities.Issuer;
 import com.invest.app.data_extract.entities.IssuerMetadata;
+import com.invest.app.data_extract.entities.TimePeriod;
 import com.invest.app.data_extract.json_parser.SimpleJsonParser;
-import com.invest.app.data_extract.repository.time_utils.TimePeriod;
 
 public class Operator{
 

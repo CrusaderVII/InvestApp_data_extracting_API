@@ -1,4 +1,4 @@
-package com.invest.app.data_extract.repository.time_utils;
+package com.invest.app.data_extract.entities;
 
 import java.util.Arrays;
 

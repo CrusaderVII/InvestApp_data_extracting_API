@@ -14,9 +14,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.invest.app.data_extract.entities.Issuer;
 import com.invest.app.data_extract.entities.IssuerFactory;
 import com.invest.app.data_extract.entities.IssuerMetadata;
+import com.invest.app.data_extract.entities.TimePeriod;
 import com.invest.app.data_extract.repository.Operator;
 import com.invest.app.data_extract.repository.RequestConstructor;
-import com.invest.app.data_extract.repository.time_utils.TimePeriod;
 
 import ch.qos.logback.core.pattern.parser.Node;
 

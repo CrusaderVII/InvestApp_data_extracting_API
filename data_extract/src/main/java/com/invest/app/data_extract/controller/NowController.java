@@ -40,4 +40,14 @@ public class NowController {
 		return listIssuers.subList(begin >= listIssuers.size() ? listIssuers.size()-11 : begin, 
 								   end >= listIssuers.size() ? listIssuers.size()-1 : end);
 	}
+	
+	@GetMapping("/level/issuers")
+	public List<Issuer> getIssuersOnCertainLevelNow(@RequestBody List<IssuerMetadata> list) {
+		List<Issuer> issuersNow = list.stream()
+				.map(issuerMetadata -> Operator.getIssuerNow(issuerMetadata.getSecId()))
+				.toList();
+		
+		
+		return issuersNow;
+	}
 }
