@@ -172,9 +172,7 @@ public class Operator{
 			
 			e.printStackTrace();
 		}
-		
-		issuers.forEach(System.out::println);
-		
+				
 		return issuers;
 	}
 	

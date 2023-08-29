@@ -6,6 +6,10 @@ public class IssuerFactory {
 		return new Issuer(secId, fullName, priceLow, priceHigh);
 	}
 	
+	public static Issuer create(String secId, String fullName, double priceOpen, String date) {
+		return new Issuer(secId, fullName, priceOpen, date);
+	}
+	
 	public static Issuer create(String secId, String fullName, double priceLow, double priceHigh, double priceNow) {
 		return new Issuer(secId, fullName, priceLow, priceHigh, priceNow);
 	}

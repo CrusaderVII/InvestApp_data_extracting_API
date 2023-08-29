@@ -55,8 +55,8 @@ public class SimpleJsonParser {
 					.add(fieldName.asText()));
 		
 		int nameIndex = fields.indexOf("SHORTNAME");
-		int lowIndex  = fields.indexOf("LOW");
-		int highIndex = fields.indexOf("HIGH");
+		int openIndex  = fields.indexOf("OPEN");
+		int dateIndex = fields.indexOf("TRADEDATE");
 		
 		ArrayNode issuerData = (ArrayNode) innerNode.get("data");
 		
@@ -65,8 +65,8 @@ public class SimpleJsonParser {
 			
 			issuers.add(IssuerFactory.create(secId, 
 					issuerDate.get(nameIndex).asText(),
-					issuerDate.get(lowIndex).asDouble(),
-					issuerDate.get(highIndex).asDouble()));
+					issuerDate.get(openIndex).asDouble(),
+					issuerDate.get(dateIndex).asText()));
 		}
 		
 		return issuers;

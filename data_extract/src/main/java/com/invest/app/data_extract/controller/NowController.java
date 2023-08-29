@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,7 +42,7 @@ public class NowController {
 								   end >= listIssuers.size() ? listIssuers.size()-1 : end);
 	}
 	
-	@GetMapping("/level/issuers")
+	@PostMapping("/level/issuers")
 	public List<Issuer> getIssuersOnCertainLevelNow(@RequestBody List<IssuerMetadata> list) {
 		List<Issuer> issuersNow = list.stream()
 				.map(issuerMetadata -> Operator.getIssuerNow(issuerMetadata.getSecId()))
