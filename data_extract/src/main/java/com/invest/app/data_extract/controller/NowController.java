@@ -19,7 +19,6 @@ import com.invest.app.data_extract.repository.RequestConstructor;
 @RequestMapping("/now")
 public class NowController {
 	
-
 	@GetMapping("/test")
 	public List<Issuer> getUserIssuers(@RequestParam Long id) {				
 		List<Issuer> issuers = Operator.getCertainIssuersNow(id);
@@ -48,7 +47,11 @@ public class NowController {
 				.map(issuerMetadata -> Operator.getIssuerNow(issuerMetadata.getSecId()))
 				.toList();
 		
-		
 		return issuersNow;
+	}
+	
+	@GetMapping("/issuer")
+	public Issuer getIssuerNow(@RequestParam String secId) {
+		return Operator.getIssuerNowWithPercent(secId);
 	}
 }

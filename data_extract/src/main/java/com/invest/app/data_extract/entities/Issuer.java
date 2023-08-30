@@ -1,5 +1,6 @@
 package com.invest.app.data_extract.entities;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,6 +12,7 @@ public class Issuer {
 	private double priceHigh;
 	private double priceNow;
 	private double priceOpen;
+	private double percent;
 	private String date;
 	
 	public Issuer() {
@@ -46,6 +48,21 @@ public class Issuer {
 		this.fullName = fullName;
 		this.priceOpen = priceOpen;
 		this.date = date;
+	}
+	
+	public Issuer(String secId, String fullName, String date, double priceOpen, double priceNow, double change) {
+		this.secId = secId;
+		this.fullName = fullName;
+		this.priceNow = priceNow;
+		this.priceOpen = priceOpen;
+		this.percent = calculatePercent(priceOpen, change);
+		this.date = date;
+	}
+	
+	private double calculatePercent(double priceOpen, double change) {
+		double percent = change/priceOpen * 100;
+		
+		return Double.parseDouble(String.format("%.2f", percent).replace(',', '.'));
 	}
 	
 	public String getShortName() {
@@ -96,6 +113,14 @@ public class Issuer {
 
 	public void setPriceOpen(double priceOpen) {
 		this.priceOpen = priceOpen;
+	}
+
+	public double getPercent() {
+		return percent;
+	}
+
+	public void setPercent(double percent) {
+		this.percent = percent;
 	}
 
 	@Override

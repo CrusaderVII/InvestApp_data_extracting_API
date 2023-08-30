@@ -18,6 +18,10 @@ public class IssuerFactory {
 		return new Issuer(secId, fullName, priceLow, priceHigh, 0, date);
 	}
 	
+	public static Issuer create(String secId, String fullName, String date, double priceOpen, double priceNow, double change) {
+		return new Issuer(secId, fullName, date, priceOpen, priceNow, change);
+	}
+	
 	public static Issuer create(String secId, String fullName, double priceLow, double priceHigh, double priceNow, String date) {
 		return new Issuer(secId, fullName, priceLow, priceHigh, priceNow, date);
 	}

@@ -3,7 +3,6 @@ package com.invest.app.data_extract.json_parser;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,8 +16,6 @@ import com.invest.app.data_extract.entities.IssuerMetadata;
 import com.invest.app.data_extract.entities.TimePeriod;
 import com.invest.app.data_extract.repository.Operator;
 import com.invest.app.data_extract.repository.RequestConstructor;
-
-import ch.qos.logback.core.pattern.parser.Node;
 
 public class SimpleJsonParser {
 	
@@ -100,6 +97,38 @@ public class SimpleJsonParser {
 				innerNodeMarketData.get("data").get(0).get(lowIndex).asDouble(),
 				innerNodeMarketData.get("data").get(0).get(highIndex).asDouble(),
 				innerNodeMarketData.get("data").get(0).get(nowIndex).asDouble());
+	}
+	
+	public static Issuer getIssuerNowWithPercent(JsonNode jsonNode, String secId) {
+		JsonNode innerNodeMarketData = jsonNode.get("marketdata");
+		JsonNode innerNodeIssuerData = jsonNode.get("securities");
+		
+		List<String> fieldsMarket = new ArrayList<>();
+		List<String> fieldsIssuer = new ArrayList<>();
+		
+		
+		innerNodeMarketData.get("columns")
+			.iterator()
+			.forEachRemaining(fieldName -> fieldsMarket
+					.add(fieldName.asText()));
+		
+		innerNodeIssuerData.get("columns")
+			.iterator()
+			.forEachRemaining(fieldName -> fieldsIssuer
+					.add(fieldName.asText()));
+
+		int nameIndex = fieldsIssuer.indexOf("SHORTNAME");
+		int dateIndex  = fieldsMarket.indexOf("SYSTIME");
+		int nowIndex = fieldsMarket.indexOf("LAST");
+		int openIndex = fieldsMarket.indexOf("OPEN");
+		int changeIndex = fieldsMarket.indexOf("CHANGE");
+		
+		return IssuerFactory.create(secId,
+				innerNodeIssuerData.get("data").get(0).get(nameIndex).asText(),
+				innerNodeMarketData.get("data").get(0).get(dateIndex).asText(),
+				innerNodeMarketData.get("data").get(0).get(openIndex).asDouble(),
+				innerNodeMarketData.get("data").get(0).get(nowIndex).asDouble(),
+				innerNodeMarketData.get("data").get(0).get(changeIndex).asDouble());
 	}
 	
 	public static List<Issuer> getIssuerHistory(JsonNode jsonNode, String secId, int current, int total) {

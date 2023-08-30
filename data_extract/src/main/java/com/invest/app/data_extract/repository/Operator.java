@@ -75,6 +75,23 @@ public class Operator{
 		}
 		return issuer;
 	}
+	
+	public static Issuer getIssuerNowWithPercent(String secId) {
+		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getNowRequest(secId));
+		
+		Issuer issuer;
+		
+		try {
+			issuer = SimpleJsonParser
+					.getIssuerNowWithPercent(SimpleJsonParser
+							.parse(readJson(br)), secId);
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+			return null;
+		}
+		return issuer;
+	}
 
 	public static List<Issuer> getIssuerHistory(String secId) {
 		List<Issuer> issuerHistory = new ArrayList<>();
