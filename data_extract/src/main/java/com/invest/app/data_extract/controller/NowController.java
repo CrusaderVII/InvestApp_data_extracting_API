@@ -52,6 +52,8 @@ public class NowController {
 	
 	@GetMapping("/issuer")
 	public Issuer getIssuerNow(@RequestParam String secId) {
+		
+		System.out.println("lol");
 		return Operator.getIssuerNowWithPercent(secId);
 	}
 }

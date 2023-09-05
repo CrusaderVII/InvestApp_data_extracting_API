@@ -14,7 +14,7 @@ import com.invest.app.data_extract.repository.Operator;
 import com.invest.app.data_extract.repository.RequestConstructor;
 
 @RestController
-public class MainController {
+public class DataMainController {
 
 	@GetMapping("/last-month")
 	public List<Issuer> getIssuer(@RequestParam String id) {		
