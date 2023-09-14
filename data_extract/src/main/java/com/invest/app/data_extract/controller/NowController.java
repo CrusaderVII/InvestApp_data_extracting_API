@@ -44,7 +44,7 @@ public class NowController {
 	@PostMapping("/level/issuers")
 	public List<Issuer> getIssuersOnCertainLevelNow(@RequestBody List<IssuerMetadata> list) {
 		List<Issuer> issuersNow = list.stream()
-				.map(issuerMetadata -> Operator.getIssuerNow(issuerMetadata.getSecId()))
+				.map(issuerMetadata -> Operator.getIssuerNowWithPercent(issuerMetadata.getSecId()))
 				.toList();
 		
 		return issuersNow;
@@ -53,7 +53,6 @@ public class NowController {
 	@GetMapping("/issuer")
 	public Issuer getIssuerNow(@RequestParam String secId) {
 		
-		System.out.println("lol");
 		return Operator.getIssuerNowWithPercent(secId);
 	}
 }

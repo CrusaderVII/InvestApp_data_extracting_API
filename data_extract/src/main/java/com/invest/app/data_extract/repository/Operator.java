@@ -193,6 +193,15 @@ public class Operator{
 		return issuers;
 	}
 	
+	public static List<Issuer> getIssuersOnCertainLevelNow(int level) {
+		List<IssuerMetadata> metadata = Operator.getIssuersMetadataOnCertainLevel(level);
+		List<Issuer> issuersNow = metadata.stream()
+				.map(issuerMetadata -> Operator.getIssuerNowWithPercent(issuerMetadata.getSecId()))
+				.toList();
+		
+		return issuersNow;
+	}
+	
 	private static String readJson(BufferedReader br) {
 		String output;
         StringBuilder builder = new StringBuilder();
