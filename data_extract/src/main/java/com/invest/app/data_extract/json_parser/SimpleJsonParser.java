@@ -40,7 +40,7 @@ public class SimpleJsonParser {
 		return new TimePeriod(values.get(0).get(0).textValue(), values.get(0).get(1).textValue());
 	}
 	
-	public static List<Issuer> getIssuerForLastMonth(JsonNode jsonNode, String secId) {
+	public static List<Issuer> getIssuerForPeriod (JsonNode jsonNode, String secId, int period) {
 		JsonNode innerNode = jsonNode.get("history");
 		
 		List<String> fields = new ArrayList<>();
@@ -57,7 +57,7 @@ public class SimpleJsonParser {
 		
 		ArrayNode issuerData = (ArrayNode) innerNode.get("data");
 		
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < period; i++) {
 			JsonNode issuerDate = issuerData.get(i); 
 			
 			issuers.add(IssuerFactory.create(secId, 

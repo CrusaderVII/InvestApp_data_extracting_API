@@ -31,8 +31,26 @@ public class Operator{
    		
    		try {
 			issuerData = SimpleJsonParser
-					.getIssuerForLastMonth(SimpleJsonParser
-							.parse(readJson(br)), secId);
+					.getIssuerForPeriod(SimpleJsonParser
+							.parse(readJson(br)), secId, 30);
+		} catch (IOException e) {
+			issuerData = null;
+			
+			e.printStackTrace();
+		}
+           
+   		return issuerData;
+	}
+	
+	public static List<Issuer> getIssuerForLastWeek(String secId) {
+		BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getRequest(secId));
+        
+        List<Issuer> issuerData;
+   		
+   		try {
+			issuerData = SimpleJsonParser
+					.getIssuerForPeriod(SimpleJsonParser
+							.parse(readJson(br)), secId, 7);
 		} catch (IOException e) {
 			issuerData = null;
 			
