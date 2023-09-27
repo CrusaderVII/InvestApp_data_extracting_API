@@ -16,8 +16,23 @@ import com.invest.app.data_extract.repository.Operator;
 import com.invest.app.data_extract.repository.RequestConstructor;
 
 @RestController
-@RequestMapping("/now")
+@RequestMapping("/api/data/now")
 public class NowController {
+	
+	@GetMapping("/issuer")
+	public Issuer getIssuerNow(@RequestParam String secId) {
+		
+		return Operator.getIssuerNowWithPercent(secId);
+	}
+	
+	@PostMapping("issuers/certain")
+	public List<Issuer> getcertainIssuersNow(@RequestBody List<IssuerMetadata> list) {
+		List<Issuer> issuersNow = list.stream()
+				.map(issuerMetadata -> Operator.getIssuerNowWithPercent(issuerMetadata.getSecId()))
+				.toList();
+		
+		return issuersNow;
+	}
 	
 	@GetMapping("/test")
 	public List<Issuer> getUserIssuers(@RequestParam Long id) {				
@@ -39,20 +54,5 @@ public class NowController {
 		
 		return listIssuers.subList(begin >= listIssuers.size() ? listIssuers.size()-11 : begin, 
 								   end >= listIssuers.size() ? listIssuers.size()-1 : end);
-	}
-	
-	@PostMapping("/level/issuers")
-	public List<Issuer> getIssuersOnCertainLevelNow(@RequestBody List<IssuerMetadata> list) {
-		List<Issuer> issuersNow = list.stream()
-				.map(issuerMetadata -> Operator.getIssuerNowWithPercent(issuerMetadata.getSecId()))
-				.toList();
-		
-		return issuersNow;
-	}
-	
-	@GetMapping("/issuer")
-	public Issuer getIssuerNow(@RequestParam String secId) {
-		
-		return Operator.getIssuerNowWithPercent(secId);
 	}
 }
