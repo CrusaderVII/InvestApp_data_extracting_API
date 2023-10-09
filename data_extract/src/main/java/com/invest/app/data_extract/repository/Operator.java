@@ -24,6 +24,17 @@ public class Operator{
 		
 	}
 
+	public static List<Issuer> getMainsNow() {
+		String[] ids = {"TCSG", "SBER", "YNDX", "MTSS", "GAZP", "LKOH"};
+		List<Issuer> issuers = new ArrayList<>();
+
+		for (String id : ids) {
+			issuers.add(Operator.getIssuerNowWithPercent(id));
+		}
+
+		return issuers;
+	}
+
 	public static List<Issuer> getIssuerForLastMonth(String secId) {
         BufferedReader br = RequestConstructor.getPlainJson(RequestConstructor.getRequest(secId));
         

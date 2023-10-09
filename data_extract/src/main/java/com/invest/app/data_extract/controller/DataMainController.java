@@ -18,6 +18,13 @@ import com.invest.app.data_extract.repository.RequestConstructor;
 @RestController
 @RequestMapping("/api/data")
 public class DataMainController {
+
+	@GetMapping("/mains.now")
+	public  List<Issuer> getMainsNow() {
+		List<Issuer> issuers = Operator.getMainsNow();
+
+		return issuers;
+	}
 	
 	@GetMapping("/stock")
 	public List<Issuer> getStockNow(@RequestParam int page) {
